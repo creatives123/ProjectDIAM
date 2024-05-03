@@ -1,0 +1,38 @@
+<!-- TEMPLATE BASE -->
+{% extends 'base.html' %}
+
+<title>{% block title %}Search Movies{% endblock %}</title>
+
+{% block content %}
+    <div class="row">
+        {% if size == 0%}
+            <h1>No results found!</h1>
+
+        {% else %}
+            {% for i in new_list %}
+                <div class="col-sm-3 p-2">
+                    <div class="card border border-2 border-warning h-100" style="width: 18rem;">
+                        <img src="https://image.tmdb.org/t/p/w500/{{ i.poster_path }}" class="card-img-top rounded img-fluid img-thumbnail"
+                            width="100" height="250" alt="{{ i.title }}">
+                        <div class="card-body" style="width: 18rem;">
+                            <h5 class="card-title">{{ i.title }}</h5>
+                            <p class="card-text">{{ i.overview|truncatechars:150 }}</p>
+                        </div>
+                        <ul class="list-group list-group-flush" style="border: none">
+                            <li class="list-group-item"> <span class="badge rounded-pill bg-warning text-dark">{{ i.vote_average }} / 10</span>
+                            </li>
+                        </ul>
+                        <div class="card-footer text-muted">
+                            <a href="{% url 'Movies:movie_details' i.id %}" class="btn btn-warning">Details</a>
+                        </div>
+                    </div>
+
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

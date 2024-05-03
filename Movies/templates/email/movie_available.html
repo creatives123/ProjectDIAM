@@ -1,0 +1,17 @@
+{% extends 'base_email.html' %}
+{% block header_email %}
+    New Movie Added
+{% endblock %}
+{% block preheader %}
+    We're thrilled to let you know that your requested movie was added.
+{% endblock %}
+{% block head %}
+    <p style="margin: 0;">
+        We're thrilled to let you know that your requested movie was added.
+    </p>
+{% endblock %}
+{% block content %}
+    <p style="margin: 0;">
+        The movie <a href="http://127.0.0.1:8000{% url 'Movies:movie_details' movie.id %}"> {{ movie.title }}</a> that you requested is now available on Blockbuster!
+    </p>
+{% endblock %}

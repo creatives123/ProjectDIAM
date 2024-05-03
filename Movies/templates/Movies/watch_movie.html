@@ -1,0 +1,28 @@
+<!-- TEMPLATE BASE -->
+{% extends 'base.html' %}
+
+<title>{% block title %}Watch Movie{% endblock %}</title>
+
+{% block content %}
+    <style>
+        .containerYou {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+        }
+
+        .video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <div class="containerYou">
+        <iframe src="https://www.youtube.com/embed/{{ movie_trailer }}" allowfullscreen class="video"></iframe>
+    </div>
+
+
+{% endblock %}

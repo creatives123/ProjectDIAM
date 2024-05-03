@@ -1,0 +1,248 @@
+<!-- TEMPLATE BASE -->
+{% extends 'base.html' %}
+
+<title>{% block title %}Movie Details{% endblock %}</title>
+
+{% block content %}
+    <div class="container">
+        <div class="main-body">
+            <div class="row gutters-sm">
+                <div class="col-mt-2">
+                    <div class="card mb-3">
+                        <div class="row no-gutters">
+                            <div class="col-auto">
+                                <img src="https://image.tmdb.org/t/p/w342/{{ movie_obj.poster_path }}"
+                                     class="img-fluid img-thumbnail m-2" alt="">
+                            </div>
+                            <div class="col">
+                                <div class="card-block px-2">
+                                    <ul class="list-group list-group-flush" style="border: none">
+                                        <li class="list-group-item" style="height: 100px; border: none">
+                                            <h4 class="card-title">{{ movie_obj.title }}</h4>
+                                            <h6 class="card-title">{{ movie_obj.tagline }}</h6>
+                                        </li>
+                                        <li class="list-group-item" style="height: 100px; border: none">
+                                            <p class="card-text">{{ movie_obj.overview }}</p>
+                                        </li>
+                                        <li class="list-group-item" style="height: 180px; border: none">
+                                            <div class="table-responsive">
+                                                <table class="table table-borderless">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width:15%">Release Date</th>
+                                                        <th scope="col" style="width:20%">Spoken Language</th>
+                                                        <th scope="col">TMDB Rating</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>{{ movie_obj.release_date }}</td>
+                                                        <td>{% for i in movie_obj.spoken_languages %}
+                                                            {{ i.name }} <br>
+                                                        {% endfor %}
+                                                        </td>
+                                                        <td><span
+                                                                class="badge rounded-pill bg-warning text-dark"> {{ movie_obj.vote_average }} / 10</span>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item" style="height: 80px; border: none">
+                                            {% if user.is_authenticated and movie_bd %}
+                                            <h3> Price: {{ movie_bd.price }} BlockCoins </h3>
+                                            {% endif %}
+                                        </li>
+                                        <li class="list-group-item" style="border: none">
+                                            {% if movie_link %}
+                                                <a class="btn btn-warning"
+                                                   href="{% url 'Movies:watch_movie' movie_obj.id %}" role="button">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-play-circle" viewBox="0 0 16 16">
+                                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                                        <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"></path>
+                                                    </svg>
+                                                    Watch Movie
+                                                </a>
+                                            {% else %}
+                                                <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                                        data-bs-target="#rent">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-cash-coin" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd"
+                                                              d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0z"></path>
+                                                        <path d="M9.438 11.944c.047.596.518 1.06 1.363 1.116v.44h.375v-.443c.875-.061 1.386-.529 1.386-1.207 0-.618-.39-.936-1.09-1.1l-.296-.07v-1.2c.376.043.614.248.671.532h.658c-.047-.575-.54-1.024-1.329-1.073V8.5h-.375v.45c-.747.073-1.255.522-1.255 1.158 0 .562.378.92 1.007 1.066l.248.061v1.272c-.384-.058-.639-.27-.696-.563h-.668zm1.36-1.354c-.369-.085-.569-.26-.569-.522 0-.294.216-.514.572-.578v1.1h-.003zm.432.746c.449.104.655.272.655.569 0 .339-.257.571-.709.614v-1.195l.054.012z"></path>
+                                                        <path d="M1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.083c.058-.344.145-.678.258-1H3a2 2 0 0 0-2-2V3a2 2 0 0 0 2-2h10a2 2 0 0 0 2 2v3.528c.38.34.717.728 1 1.154V1a1 1 0 0 0-1-1H1z"></path>
+                                                        <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z"></path>
+                                                    </svg>
+                                                    Rent Movie
+                                                </button>
+                                            {% endif %}
+                                            {% if user.is_authenticated and not movie_link %}
+                                                <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                                        data-bs-target="#request">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+                                                    </svg>
+                                                    Request Movie
+                                                </button>
+                                            {% endif %}
+                                            {% if  user.is_authenticated %}
+                                                <a class="btn btn-warning"
+                                                   href="{% url 'Movies:watchlist_add' movie_obj.id %}"
+                                                   role="button">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                         fill="currentColor"
+                                                         class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+                                                    </svg>
+                                                    Add to Wach List
+                                                </a>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if movie_bd %}
+                <div class="card mt-2">
+                    {% if comments|length > 0 %}
+                        <div class="row">
+                            <div class="col m-2">
+                                <h2>
+                                    {% if comments|length > 0 %}
+                                        Comments:
+                                    {% elif comments|length > 0 and user.is_authenticated %}
+                                        No comments, so sad :(
+                                    {% endif %}
+                                </h2>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="row justify-content-center">
+                        <div class="col">
+                            {% for comment in comments %}
+                                <div class="d-flex flex-row comment-row">
+                                    <div class="p-2"><span class="round"><img
+                                            src="https://api.multiavatar.com/{{ comment.client.user.get_full_name }}.png"
+                                            alt="user"
+                                            width="50"></span></div>
+                                    <div class="comment-text w-100">
+                                        <h5>{{ comment.cliente }}</h5>
+                                        <div class="comment-footer">
+                                            <span class=" text-muted font-weight-normal">{{ comment.created_on }}</span>
+
+                                        </div>
+                                        <p class="m-b-5 m-t-10">{{ comment.body | linebreaks }}</p>
+                                    </div>
+                                </div>
+                                <hr>
+                            {% endfor %}
+
+                        </div>
+                        {% if user.is_authenticated %}
+                            <div class="col-sm-4">
+                                <div class="card-body">
+                                    {% if not new_comment %}
+                                        <h3>Leave a comment</h3>
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="{{ comment_form.body.id_for_label }}">New
+                                                    comment:</label>
+                                                {{ comment_form.body }}
+                                            </div>
+                                            <br>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-warning btn-lg">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Modal Rent -->
+    <div class="modal fade" id="rent" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="rent" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">{{ movie_obj.title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {% if movie_bd %}
+                    {% if user.is_authenticated %}
+                        <div class="modal-body">
+                            <p> Do you wish to rent the selected movie for {{ movie_bd.price }} BlockCoins It will
+                                be available for 72h after
+                                renting. </p>
+                        </div>
+                    {% else %}
+                        <div class="modal-body">
+                            <p> Please register or login in our website to be able to proceed with the movie
+                                renting </p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="modal-body">
+                        <p> The selected movie is not available for renting. Please make a request and wait for our
+                            feedback </p>
+                    </div>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a class="btn btn-primary" href="{% url 'Movies:movie_rent' movie_obj.id %}" role="button">
+                            Confirm
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Request -->
+    <div class="modal fade" id="request" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="request" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">{{ movie_obj.title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p> Do you wish to request for the selected movie to be available for renting? This will notify the
+                        admins and they will
+                        come back to you with an answer as soon as possible. </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="{% url 'Movies:movie_request' movie_obj.id %}" role="button">
+                        Confirm
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

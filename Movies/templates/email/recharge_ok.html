@@ -1,0 +1,20 @@
+{% extends 'base_email.html' %}
+{% block header_email %}
+    Recharge Accepted
+{% endblock %}
+{% block preheader %}
+    We're thrilled to let you know that your recharged was approved.
+{% endblock %}
+{% block head %}
+    <p style="margin: 0;">
+        We're thrilled to let you know that your recharged was approved.
+    </p>
+{% endblock %}
+{% block content %}
+    <p style="margin: 0;">
+        Your recharge of <strong>{{ recharge.coin_amount }} BlockCoins</strong> was approved!
+    <br>
+    <br>
+    You have now a total of: <strong>{{ client.total }} BlockCoins</strong>
+    </p>
+{% endblock %}

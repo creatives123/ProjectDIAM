@@ -1,0 +1,330 @@
+<!-- TEMPLATE BASE -->
+{% extends 'base.html' %}
+
+<title>{% block title %}Profile{% endblock %}</title>
+
+{% block content %}
+    <div class="container">
+        <div class="main-body">
+            <div class="row gutters-sm">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center text-center">
+                                <img src="https://api.multiavatar.com/{{ request.user.get_full_name }}.png" alt="Admin"
+                                     class="rounded-circle" width="150">
+                                <div class="mt-3">
+                                    <h4>{{ request.user.get_full_name }}</h4>
+                                    <p class="text-secondary mb-1">
+                                        Birthday: {{ user_time.day }} {{ user_time_month }} {{ user_time.year }}</p>
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                            data-bs-target="#recharge">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-lightning-charge" viewBox="0 0 16 16">
+                                            <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09zM4.157 8.5H7a.5.5 0 0 1 .478.647L6.11 13.59l5.732-6.09H9a.5.5 0 0 1-.478-.647L9.89 2.41 4.157 8.5z"></path>
+                                        </svg>&nbsp;
+                                        Recharge BlockCoins
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Full Name</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {{ request.user.get_full_name }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Email</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {{ request.user.email }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Block Coins</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {{ bb_client }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Days since Register</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {{ days_passed }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a class="btn btn-outline-info " href="{% url 'auth_user:new_password' %}">Change
+                                        Password</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-2">
+                <div class="d-flex align-items-start">
+                    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist"
+                         aria-orientation="vertical">
+                        <button class="btn-warning nav-link active " id="v-pills-WatchList-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-WatchList" type="button" role="tab"
+                                aria-controls="v-pills-WatchList" aria-selected="true">WatchList
+                        </button>
+                        <button class="nav-link" id="v-pills-Rented_Movies-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-Rented_Movies" type="button" role="tab"
+                                aria-controls="v-pills-Rented_Movies" aria-selected="false">Rented Movies
+                        </button>
+                        <button class="nav-link" id="v-pills-Request-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-Request" type="button" role="tab"
+                                aria-controls="v-pills-Request" aria-selected="false">Request
+                        </button>
+                        <button class="nav-link" id="v-pills-Historic-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-Historic" type="button" role="tab"
+                                aria-controls="v-pills-Historic" aria-selected="false">Historic
+                        </button>
+                    </div>
+                    <div class="tab-content row justify-content-center" id="v-pills-tabContent" style="width:88%">
+                        <div class="tab-pane fade show active" id="v-pills-WatchList" role="tabpanel"
+                             aria-labelledby="v-pills-WatchList-tab">
+                            <div class="table-responsive-xxl">
+                                {% if watch|length > 0 %}
+                                    <table class="table table-xxl table-hover justify-content-center">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" class="align-middle text-center">Movie Poster</th>
+                                            <th scope="col" class="align-middle text-center">Movie Name</th>
+                                            <th scope="col" class="align-middle text-center">Movie Rating</th>
+                                            <th scope="col" class="align-middle text-center">Delete</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for i in watch %}
+                                            <tr>
+                                                <td class="align-middle text-center"><img
+                                                        src="https://image.tmdb.org/t/p/w92/{{ i.w_img }}"
+                                                        class="img-fluid img-thumbnail" alt=""></td>
+                                                <td class="align-middle text-center"><a
+                                                        href="{% url 'Movies:movie_details' i.w_movie_id %}"
+                                                        class="link-dark"> {{ i.w_title }} </a></td>
+                                                <td class="align-middle text-center">
+                                                    <span class="badge rounded-pill bg-warning text-dark"> {{ i.w_vote_average }} / 10</span>
+                                                </td>
+                                                <td class="align-middle text-center"><a class="btn btn-danger" href="{% url 'auth_user:delete_movie_watchlist' i.w_movie_id %}" role="button">Delete</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <h4> You have to put any movie on your watchlist. </h4>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-Rented_Movies" role="tabpanel"
+                             aria-labelledby="v-pills-Rented_Movies-tab">
+                            <div class="tab-pane fade show active" id="v-pills-Rented_Movies" role="tabpanel"
+                                 aria-labelledby="v-pills-Rented_Movies-tab">
+                                <div class="table-responsive-xxl">
+                                    {% if movie_rented|length > 0 %}
+                                        <table class="table table-xxl table-hover justify-content-center">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col" class="align-middle text-center">Movie Poster</th>
+                                                <th scope="col" class="align-middle text-center">Movie Name</th>
+                                                <th scope="col" class="align-middle text-center">Movie Price</th>
+                                                <th scope="col" class="align-middle text-center">Added Date</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for i in movie_rented %}
+                                                <tr>
+                                                    <td class="align-middle text-center"><img
+                                                            src="https://image.tmdb.org/t/p/w92/{{ i.movie.mo_img }}"
+                                                            class="img-fluid img-thumbnail" alt=""></td>
+                                                    <td class="align-middle text-center">
+                                                        <a href="{% url 'Movies:watch_movie' i.movie.tmvdbid %}"
+                                                           class="link-dark"> {{ i.movie.name }} </a>
+                                                    </td>
+                                                    <td class="align-middle text-center">{{ i.movie.price }}
+                                                        BlockCoins
+                                                    </td>
+                                                    <td class="align-middle text-center">{{ i.rent.re_add_date }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <h4> You have yet to rent a movie. </h4>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-Request" role="tabpanel"
+                             aria-labelledby="v-pills-Request-tab">
+                            <div class="table-responsive-xxl">
+                                {% if re_quest|length > 0 %}
+                                    <table class="table table-xxl table-hover justify-content-center">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" class="align-middle text-center">Movie Poster</th>
+                                            <th scope="col" class="align-middle text-center">Movie Name</th>
+                                            <th scope="col" class="align-middle text-center">Movie Rating</th>
+                                            <th scope="col" class="align-middle text-center">Added Date</th>
+                                            <th scope="col" class="align-middle text-center">State</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for i in re_quest %}
+                                            <tr>
+                                                <td class="align-middle text-center">
+                                                    <img src="https://image.tmdb.org/t/p/w92/{{ i.rq_img }}"
+                                                         class="img-fluid img-thumbnail" alt="">
+                                                </td>
+                                                <td class="align-middle text-center">
+                                                    <a href="{% url 'Movies:movie_details' i.movie_id %}"
+                                                       class="link-dark"> {{ i.rq_title }} </a>
+                                                </td>
+                                                <td class="align-middle text-center">
+                                                    <span class="badge rounded-pill bg-warning text-dark"> {{ i.rq_vote_average }} / 10</span>
+                                                </td>
+                                                <td class="align-middle text-center">{{ i.rq_add_date }}</td>
+                                                <td class="align-middle text-center">
+                                                    <span class="badge {% if i.request_state == 'Requested' %}bg-primary{% elif i.request_state == '"Purchase Order"' %}bg-warning{% else %}bg-success{% endif %}">{{ i.request_state }}</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <h4> You have yet to make any movie requests </h4>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-Historic" role="tabpanel"
+                             aria-labelledby="v-pills-Historic-tab">
+                            <div class="tab-pane fade show active" id="v-pills-Historic" role="tabpanel"
+                                 aria-labelledby="v-pills-Historic-tab">
+                                <div class="table-responsive-xxl">
+                                    {% if his_movie_rented|length > 0 %}
+                                        <table class="table table-xxl table-hover justify-content-center">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col" class="align-middle text-center">Movie Poster</th>
+                                                <th scope="col" class="align-middle text-center">Movie Name</th>
+                                                <th scope="col" class="align-middle text-center">Movie Price</th>
+                                                <th scope="col" class="align-middle text-center">Added Date</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for i in his_movie_rented %}
+                                                <tr>
+                                                    <td class="align-middle text-center">
+                                                        <img  src="https://image.tmdb.org/t/p/w92/{{ i.movie.mo_img }}" class="img-fluid img-thumbnail" alt="{% url 'Movies:movie_details' i.movie.tmvdbid %}"></td>
+                                                    <td class="align-middle text-center">
+                                                        <a href="" class="link-dark"> {{ i.movie.name }} </a>
+                                                    </td>
+                                                    <td class="align-middle text-center">{{ i.movie.price }}
+                                                        BlockCoins
+                                                    </td>
+                                                    <td class="align-middle text-center">{{ i.rent.re_add_date }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% else %}
+                                        <h4> You have yet to rent a movie. </h4>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <!-- Modal Recharge -->
+    <div class="modal fade" id="recharge" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="recharge" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">BlockCoins</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 form-floating needs-validation"
+                      action="{% url 'auth_user:user_profile' %}" method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="row g-3 align-items-center">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="inputGroup-sizing-default">Amount</span>
+                                <input type="number" min="15" max="2000" class="form-control" aria-label="Sizing example input"
+                                       aria-describedby="inputGroup-sizing-default" name="coinsinput" required>
+                                <div class="invalid-feedback">
+                                    Minimum Recharge: 15 BlockCoins
+                                    Maximum Recharge: 2000 BlockCoins
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                            <span id="passwordHelpInline" class="form-text">
+                                Minimum Recharge: 15 BlockCoins
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" type="submit" id="button-addon2">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation');
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+{% endblock %}

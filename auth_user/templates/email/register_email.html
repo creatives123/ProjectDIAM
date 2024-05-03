@@ -1,0 +1,22 @@
+{% extends 'base_email.html' %}
+{% block header_email %}
+    Welcome to BlockBuster
+{% endblock %}
+{% block preheader %}
+    We're thrilled to have you here! Get ready to dive into your new account.
+{% endblock %}
+{% block head %}
+    <p style="margin: 0;">
+        Thank you for choosing BlockBuster. You can now enter a new world!
+    </p>
+{% endblock %}
+{% block content %}
+    <p style="margin: 0;">
+        {% autoescape off %}
+            Welcome {{ user.firstname }}<br>
+            lease click on the link to confirm your registration,
+            <br><br>
+            {{ protocol }}://{{ domain }}{% url 'auth_user:activate' uidb64=uid token=token %}
+        {% endautoescape %}
+    </p>
+{% endblock %}
